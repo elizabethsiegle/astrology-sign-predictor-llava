@@ -112,7 +112,7 @@
         <div id="result"></div>
     </div>
     <footer>
-        Made with ❤️ in SF
+        Made with ❤️ in SF🌁 -> <a href="https://github.com/elizabethsiegle/astrology-sign-predictor-llava">Code here on GitHub👩🏻‍💻</a>
     </footer>
 
     <script>
@@ -160,7 +160,7 @@
                 }
 
                 const result = await response.json();
-                resultDiv.textContent = `Analysis result: ${JSON.stringify(result.analysis)}`;
+                resultDiv.textContent = `${JSON.stringify(result.analysis)}`;
             } catch (error) {
                 console.error('Error:', error);
                 resultDiv.textContent = 'An error occurred during analysis';
@@ -172,28 +172,3 @@
     </script>
 </body>
 </html>
-
-    <!-- <script>
-        let fileName = '';
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            fileName = event.target.files[0].name;
-            document.querySelector('.upload-btn').textContent = `Selected: ${fileName}`;
-        });
-        document.getElementById('generateBtn').addEventListener('click', async function(event) {
-                event.preventDefault();
-
-                // Show spinner and hide joke container
-                const response = await fetch('/astrology', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, random, describeYourself, nsfw, model })
-                });
-
-                const res = await response.json();
-                const astrologySign = res.response ?? "No astrology sign found.";
-                // Hide spinner and show astrology container
-                document.getElementById('astrologyResponse').innerText = astrologySign;
-            });
-    </script>
-</body>
-</html> --> 

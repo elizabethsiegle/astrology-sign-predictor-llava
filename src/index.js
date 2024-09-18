@@ -20,7 +20,7 @@ export default {
 
 			const input = {
 				image: [...uint8Array],
-				prompt: "What is this person's astrology sign?",
+				prompt: "You are an astrologer. Based on this person's aura, predict their astrology sign and give a short prediction for how their week will go.",
 				max_tokens: 512,
 			};
 
@@ -30,7 +30,7 @@ export default {
 					input
 				);
 
-				return new Response(JSON.stringify({ analysis: response }), {
+				return new Response(JSON.stringify({ analysis: response['description'] }), {
 					headers: { 'Content-Type': 'application/json' }
 				});
 			} catch (error) {
