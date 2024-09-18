@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrology Selfie Reader</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #16213e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #f1c40f;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .upload-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        #imageInput {
+            display: none;
+        }
+        .upload-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 0 auto;
+            width: fit-content;
+            text-align: center;
+        }
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+        #analyzeBtn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 1rem auto 0;
+            width: fit-content;
+            text-align: center;
+        }
+        #analyzeBtn:hover {
+            background-color: #c0392b;
+        }
+        .analyze-section {
+            text-align: center;
+        }
+        #result {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 1rem auto;
+            display: none;
+            border-radius: 5px;
+        }
+        footer {
+            background-color: #16213e;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Astrology Selfie Reader ✨</h1>
+        <form id="uploadForm">
+            <div class="upload-section">
+                <label for="imageInput" class="upload-btn">Upload Your Selfie</label>
+                <input type="file" id="imageInput" accept="image/*" required>
+            </div>
+            <img id="imagePreview" alt="Image preview" />
+            <div class="analyze-section">
+                <button type="submit" id="analyzeBtn">Analyze Image</button>
+            </div>
+        </form>
+        <div id="result"></div>
+    </div>
+    <footer>
+        Made with ❤️ in SF
+    </footer>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadForm = document.getElementById('uploadForm');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resultDiv = document.getElementById('result');
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const imageFile = imageInput.files[0];
+            if (!imageFile) {
+                alert('Please select an image file');
+                return;
+            }
+
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+            resultDiv.textContent = '';
+
+            const formData = new FormData();
+            formData.append('image', imageFile);
+
+            try {
+                const response = await fetch('/analyze-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Image analysis failed');
+                }
+
+                const result = await response.json();
+                resultDiv.textContent = `Analysis result: ${JSON.stringify(result.analysis)}`;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.textContent = 'An error occurred during analysis';
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = 'Analyze Image';
+            }
+        });
+    </script>
+</body>
+</html>
+
+    <!-- <script>
+        let fileName = '';
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            fileName = event.target.files[0].name;
+            document.querySelector('.upload-btn').textContent = `Selected: ${fileName}`;
+        });
+        document.getElementById('generateBtn').addEventListener('click', async function(event) {
+                event.preventDefault();
+
+                // Show spinner and hide joke container
+                const response = await fetch('/astrology', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, random, describeYourself, nsfw, model })
+                });
+
+                const res = await response.json();
+                const astrologySign = res.response ?? "No astrology sign found.";
+                // Hide spinner and show astrology container
+                document.getElementById('astrologyResponse').innerText = astrologySign;
+            });
+    </script>
+</body>
+</html> --> 

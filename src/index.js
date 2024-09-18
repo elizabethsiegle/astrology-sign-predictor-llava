@@ -1,15 +1,41 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
-
+import html from '../static/index.html';
 export default {
-	async fetch(request, env, ctx) {
-		return new Response('Hello World!');
-	},
-};
+    async fetch(request, env) {
+        const url = new URL(request.url);
+
+        if (request.method === 'GET' && url.pathname === '/') {
+            return new Response(html, {
+                headers: { 'Content-Type': 'text/html' },
+            });
+        } else if (request.method === 'POST' && url.pathname === '/analyze-image') {
+            const formData = await request.formData();
+			const imageFile = formData.get('image');
+
+			if (!imageFile) {
+				return new Response('No image file uploaded', { status: 400 });
+			}
+
+			const arrayBuffer = await imageFile.arrayBuffer();
+			const uint8Array = new Uint8Array(arrayBuffer);
+
+			const input = {
+				image: [...uint8Array],
+				prompt: "What is this person's astrology sign?",
+				max_tokens: 512,
+			};
+
+			try {
+				const response = await env.AI.run(
+					"@cf/llava-hf/llava-1.5-7b-hf",
+					input
+				);
+
+				return new Response(JSON.stringify({ analysis: response }), {
+					headers: { 'Content-Type': 'application/json' }
+				});
+			} catch (error) {
+				return new Response('Error analyzing image: ' + error.message, { status: 500 });
+			}
+		}
+	}
+}
