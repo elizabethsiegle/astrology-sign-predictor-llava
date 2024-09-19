@@ -160,7 +160,7 @@
                 }
 
                 const result = await response.json();
-                resultDiv.textContent = `${JSON.stringify(result.analysis)}`;
+                resultDiv.innerHTML = result.analysis.replace(/\n/g, '<br>');
             } catch (error) {
                 console.error('Error:', error);
                 resultDiv.textContent = 'An error occurred during analysis';
